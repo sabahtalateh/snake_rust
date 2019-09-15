@@ -1,6 +1,5 @@
 use std::fmt;
 use std::ops::{Add, Mul, Sub};
-//use std::io::Write;
 
 #[derive(Eq, Copy, Clone, Debug)]
 pub struct Coord(u32);
