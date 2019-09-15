@@ -21,9 +21,9 @@ pub fn to_coord_u32(coord: Coord) -> u32 {
     to_coord(coord) as u32
 }
 
-pub fn draw_block(color: Color, (x, y): &Cell, ctx: &Context, graphics: &mut G2d) {
-    let gui_x = to_coord(x.clone());
-    let gui_y = to_coord(y.clone());
+pub fn draw_block(color: Color, (x, y): Cell, ctx: &Context, graphics: &mut G2d) {
+    let gui_x = to_coord(x);
+    let gui_y = to_coord(y);
 
     let decrease = 4.0;
 
@@ -40,9 +40,9 @@ pub fn draw_block(color: Color, (x, y): &Cell, ctx: &Context, graphics: &mut G2d
     )
 }
 
-pub fn draw_large_block(color: Color, (x, y): &Cell, ctx: &Context, graphics: &mut G2d) {
-    let gui_x = to_coord(x.clone());
-    let gui_y = to_coord(y.clone());
+pub fn draw_large_block(color: Color, (x, y): Cell, ctx: &Context, graphics: &mut G2d) {
+    let gui_x = to_coord(x);
+    let gui_y = to_coord(y);
 
     let decrease = 0.0;
 
@@ -59,26 +59,26 @@ pub fn draw_large_block(color: Color, (x, y): &Cell, ctx: &Context, graphics: &m
     )
 }
 
-pub fn draw_wall(cell: &Cell, ctx: &Context, graphics: &mut G2d) {
+pub fn draw_wall(cell: Cell, ctx: &Context, graphics: &mut G2d) {
     draw_block(WALL_COLOR, cell, ctx, graphics)
 }
 
-pub fn draw_empty(cell: &Cell, ctx: &Context, graphics: &mut G2d) {
+pub fn draw_empty(cell: Cell, ctx: &Context, graphics: &mut G2d) {
     draw_block(EMPTY_COLOR, cell, ctx, graphics)
 }
 
-pub fn draw_snake(cell: &Cell, ctx: &Context, graphics: &mut G2d) {
+pub fn draw_snake(cell: Cell, ctx: &Context, graphics: &mut G2d) {
     draw_block(SNAKE_COLOR, cell, ctx, graphics);
 }
 
-pub fn draw_snake_eating(cell: &Cell, ctx: &Context, graphics: &mut G2d) {
+pub fn draw_snake_eating(cell: Cell, ctx: &Context, graphics: &mut G2d) {
     draw_large_block(SNAKE_EATING_COLOR, cell, ctx, graphics);
 }
 
-pub fn draw_collision(cell: &Cell, ctx: &Context, graphics: &mut G2d) {
+pub fn draw_collision(cell: Cell, ctx: &Context, graphics: &mut G2d) {
     draw_block(COLLISION_COLOR, cell, ctx, graphics);
 }
 
-pub fn draw_food(cell: &Cell, ctx: &Context, graphics: &mut G2d) {
+pub fn draw_food(cell: Cell, ctx: &Context, graphics: &mut G2d) {
     draw_block(FOOD_COLOR, cell, ctx, graphics);
 }

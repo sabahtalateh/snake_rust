@@ -2,7 +2,7 @@ use std::fmt;
 use std::ops::{Add, Mul, Sub};
 //use std::io::Write;
 
-#[derive(Eq, Hash, Copy, Clone, Debug)]
+#[derive(Eq, Copy, Clone, Debug)]
 pub struct Coord(u32);
 
 impl fmt::Display for Coord {
@@ -27,7 +27,7 @@ impl Mul<f64> for Coord {
     type Output = f64;
 
     fn mul(self, rhs: f64) -> f64 {
-        self.0 as f64 * rhs
+        f64::from(self.0) * rhs
     }
 }
 

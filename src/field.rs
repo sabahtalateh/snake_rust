@@ -27,9 +27,9 @@ impl Field {
         }
     }
 
-    pub fn get_cell_type(&self, (x, y): &Cell) -> Option<&CellType> {
-        let y_idx: usize = y.clone().into();
-        let x_idx: usize = x.clone().into();
+    pub fn get_cell_type(&self, (x, y): Cell) -> Option<&CellType> {
+        let y_idx: usize = y.into();
+        let x_idx: usize = x.into();
         // return in reverse order because `y` states for `rows` and `x` for `cells`
         self.field.get(y_idx)?.get(x_idx)
     }
@@ -60,35 +60,30 @@ impl Field {
         let mut field = Field::new();
 
         let level = fs::read_to_string(file_path).unwrap();
-        let lines: Vec<&str> = level.split("\n").collect();
+        let lines: Vec<&str> = level.split('\n').collect();
 
         let mut width = 0;
         let mut height = 0;
-        let mut x = 0;
-        for &line in lines.iter() {
-            let mut y = 0;
-
+        for (x, &line) in lines.iter().enumerate() {
             let chars: Vec<char> = line.chars().collect();
-            for character in chars.iter() {
+            for (y, character) in chars.iter().enumerate() {
                 match character {
                     '-' => {
-                        field.insert_cell((Coord::new(x), Coord::new(y)), CellType::WALL);
+                        field.insert_cell((Coord::new(x as u32), Coord::new(y as u32)), CellType::WALL);
                     }
                     _ => {
-                        field.insert_cell((Coord::new(x), Coord::new(y)), CellType::EMPTY);
+                        field.insert_cell((Coord::new(x as u32), Coord::new(y as u32)), CellType::EMPTY);
                     }
                 }
-                y += 1;
                 if y > width {
                     width = y;
                 }
             }
-            x += 1;
             height += 1;
         }
 
-        field.width = width;
-        field.height = height;
+        field.width = width as u32;
+        field.height = height as u32;
 
         Ok(field)
     }
@@ -98,14 +93,14 @@ impl Field {
             for x in 0..self.width() {
                 let cell: Cell = (Coord::new(x), Coord::new(y));
                 let cell_type = self
-                    .get_cell_type(&cell)
+                    .get_cell_type(cell)
                     .unwrap_or_else(|| &CellType::EMPTY);
                 match cell_type {
                     CellType::WALL => {
-                        draw::draw_wall(&cell, context, graphics);
+                        draw::draw_wall(cell, context, graphics);
                     }
                     CellType::EMPTY => {
-                        draw::draw_empty(&cell, context, graphics);
+                        draw::draw_empty(cell, context, graphics);
                     }
                 }
             }
@@ -118,7 +113,7 @@ impl Field {
             for y in 0..self.width() {
                 let cell: Cell = (Coord::new(y), Coord::new(x));
                 let cell_type = self
-                    .get_cell_type(&cell)
+                    .get_cell_type(cell)
                     .unwrap_or_else(|| &CellType::EMPTY);
 
                 if let CellType::EMPTY = cell_type {

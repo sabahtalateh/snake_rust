@@ -26,41 +26,36 @@ pub struct Snake {
 impl Snake {
     pub fn load_from_file(file_path: &str) -> MyResult<Snake> {
         let file = fs::read_to_string(file_path).unwrap();
-        let lines: Vec<&str> = file.split("\n").collect();
+        let lines: Vec<&str> = file.split('\n').collect();
 
         let mut body = LinkedList::new();
         let mut direction = None;
-        let mut y = 0;
-        for &line in lines.iter() {
-            let mut x = 0;
-
+        for (y, &line) in lines.iter().enumerate() {
             let chars: Vec<char> = line.chars().collect();
-            for character in chars.iter() {
+            for (x, character) in chars.iter().enumerate() {
                 match character {
                     'r' => {
-                        body.push_front((Coord::new(x), Coord::new(y)));
+                        body.push_front((Coord::new(x as u32), Coord::new(y as u32)));
                         direction = Some(Direction::RIGHT);
                     }
                     'l' => {
-                        body.push_front((Coord::new(x), Coord::new(y)));
+                        body.push_front((Coord::new(x as u32), Coord::new(y as u32)));
                         direction = Some(Direction::LEFT);
                     }
                     'u' => {
-                        body.push_front((Coord::new(x), Coord::new(y)));
+                        body.push_front((Coord::new(x as u32), Coord::new(y as u32)));
                         direction = Some(Direction::UP);
                     }
                     'd' => {
-                        body.push_front((Coord::new(x), Coord::new(y)));
+                        body.push_front((Coord::new(x as u32), Coord::new(y as u32)));
                         direction = Some(Direction::DOWN);
                     }
                     '=' => {
-                        body.push_front((Coord::new(x), Coord::new(y)));
+                        body.push_front((Coord::new(x as u32), Coord::new(y as u32)));
                     }
                     _ => (),
                 }
-                x += 1;
             }
-            y += 1;
         }
 
         let direction = match direction {
@@ -68,7 +63,7 @@ impl Snake {
             None => return Err(MyError::NoDirection.into()),
         };
 
-        let prev_tail = body.back().unwrap().clone();
+        let prev_tail = *body.back().unwrap();
 
         Ok(Snake {
             body,
@@ -87,7 +82,7 @@ impl Snake {
             }
         }
 
-        let head = self.body.front().unwrap().clone();
+        let head = *self.body.front().unwrap();
         match self.direction {
             Direction::UP => {
                 self.body.push_front((head.0, head.1 - 1));
@@ -107,10 +102,10 @@ impl Snake {
 
     pub fn draw(&self, context: &Context, graphics: &mut G2d) {
         for block in &self.body {
-            draw::draw_snake(block, context, graphics);
+            draw::draw_snake(*block, context, graphics);
         }
         for block in &self.food {
-            draw::draw_snake_eating(block, context, graphics);
+            draw::draw_snake_eating(*block, context, graphics);
         }
     }
 

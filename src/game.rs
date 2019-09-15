@@ -50,7 +50,7 @@ impl Game {
     }
 
     pub fn update(&mut self, delta_time: f64) {
-        if self.game_over == true {
+        if self.is_over() {
             return;
         }
 
@@ -60,7 +60,7 @@ impl Game {
             return;
         }
 
-        if let None = self.food {
+        if self.food.is_none() {
             self.food = self.generate_food();
         }
 
@@ -78,15 +78,15 @@ impl Game {
     }
 
     pub fn draw(&self, context: &Context, graphics: &mut G2d) {
-        &self.field.draw(context, graphics);
-        &self.snake.draw(context, graphics);
+        self.field.draw(context, graphics);
+        self.snake.draw(context, graphics);
 
         if let Some(food_cell) = self.food {
-            draw::draw_food(&food_cell, context, graphics);
+            draw::draw_food(food_cell, context, graphics);
         }
 
         if let Some(collision_cell) = self.collision {
-            draw::draw_collision(&collision_cell, context, graphics);
+            draw::draw_collision(collision_cell, context, graphics);
         }
     }
 
@@ -113,20 +113,20 @@ impl Game {
             }
         }
 
-        if empty_cells.len() == 0 {
+        if empty_cells.is_empty() {
             None
         } else {
             let mut rng = rand::thread_rng();
             let random_number: usize = rng.gen_range(0, empty_cells.len());
-            Some(empty_cells.get(random_number).unwrap().clone())
+            Some(*empty_cells.get(random_number).unwrap())
         }
     }
 
     fn get_collision(&self) -> Option<Cell> {
         let head = self.snake.body().front().unwrap();
         for (idx, snake_cell) in self.snake.body().iter().enumerate() {
-            if let CellType::WALL = self.field.get_cell_type(snake_cell).unwrap() {
-                return Some(snake_cell.clone());
+            if let CellType::WALL = self.field.get_cell_type(*snake_cell).unwrap() {
+                return Some(*snake_cell);
             }
 
             // Don't check if the head interleave the rest snake
@@ -134,7 +134,7 @@ impl Game {
                 continue;
             }
             if head == snake_cell {
-                return Some(snake_cell.clone());
+                return Some(*snake_cell);
             }
         }
         None
@@ -144,7 +144,7 @@ impl Game {
         for snake_cell in self.snake.body() {
             if let Some(food) = &self.food {
                 if food == snake_cell {
-                    return Some(food.clone());
+                    return Some(*food);
                 }
             }
         }
